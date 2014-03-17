@@ -1,0 +1,91 @@
+doctype html
+html. // THAT DOT
+<html xmlns:ng="http://angularjs.org">
+<head>
+<title>Angular Cellar</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+ 
+<body ng:controller="RouteCtrl">
+ 
+<div id="header">
+    Angular Cellar
+    <button ng:click="addWine()">New Wine</button>
+</div>
+ 
+<div id="sidebar">
+    <ng:include src="'tpl/wine-list.html'"></ng:include>
+</div>
+ 
+<div id="content">
+    <ul ng:controller="WineListCtrl">
+    <li ng:repeat="wine in wines">
+        <a href='#/wines/{{ wine.id }}'>{{ wine.name }}</a>
+    </li>
+</ul>
+</div>
+ 
+<script src="lib/angular-0.9.19.min.js" ng:autobind></script>
+<script src="js/services.js"></script>
+<script src="js/controllers.js"></script>
+<script>
+angular.service('Wine', function ($resource) {
+    return $resource('api/wines/:wineId', {}, {
+        update: {method:'PUT'}
+    });
+});
+function RouteCtrl($route) {
+ 
+    var self = this;
+ 
+    $route.when('/wines', {template:'tpl/welcome.html'});
+ 
+    $route.when('/wines/:wineId', {template:'tpl/wine-details.html', controller:WineDetailCtrl});
+ 
+    $route.otherwise({redirectTo:'/wines'});
+ 
+    $route.onChange(function () {
+        self.params = $route.current.params;
+    });
+ 
+    $route.parent(this);
+ 
+    this.addWine = function () {
+        window.location = "#/wines/add";
+    };
+ 
+}
+ 
+function WineListCtrl(Wine) {
+ 
+    this.wines = Wine.query();
+ 
+}
+ 
+function WineDetailCtrl(Wine) {
+ 
+    this.wine = Wine.get({wineId:this.params.wineId});
+ 
+ 
+    this.saveWine = function () {
+        if (this.wine.id > 0)
+            this.wine.$update({wineId:this.wine.id});
+        else
+            this.wine.$save();
+        window.location = "#/wines";
+    }
+ 
+    this.deleteWine = function () {
+        this.wine.$delete({wineId:this.wine.id}, function() {
+            alert('Wine ' + wine.name + ' deleted')
+            window.location = "#/wines";
+        });
+    }
+ 
+}
+
+</script>
+ 
+</body>
+ 
+</html>

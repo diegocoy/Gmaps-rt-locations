@@ -1,0 +1,57 @@
+<!doctype html>
+<html ng-app="routesApp">
+<head>
+	<meta charset="utf-8">
+	<title>Node/Angular Routes App</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<style>
+		html 				{ overflow-y:scroll; }
+		body 				{ padding-top:50px; background: #444;}
+		#route-list 		{ margin-bottom:30px; }
+		#route-form 	 	{ margin-bottom:50px; }
+		#map-canvas			{width: 500px; height: 400px; margin-top: 10px;}
+	</style>
+</head>
+<body>
+	<div ng-controller="mainCtrl">
+	<ul>
+	<li ng-repeat="marker in dbData">{{marker.lat}}</li>
+</ul>
+	<div class="container">
+
+		<div class="jumbotron text-center">
+				<div id="map-canvas" class="text-center"></div>
+			<h1>Locations recorded <span class="label label-info">{{ dbData.length }}</span></h1>
+		</div>
+		<div id="route-list" class="row">
+			<div class="col-sm-4 col-sm-offset-4">
+				<div class="checkbox" ng-repeat="route in dbData">
+					<label>
+						<input type="checkbox" ng-click="deleteRoute(route._id)"> {{ route }}
+					</label>
+				</div>
+			</div>
+		</div>
+		<!-- The Form -->
+		<div id="route-form" class="row">
+			<div class="col-sm-8 col-sm-offset-2 text-center">
+				<form>
+					<div class="form-group">
+						<input type="text" class="form-control input-lg text-center" placeholder="Add lat" ng-model="lat.text">
+						<input type="text" class="form-control input-lg text-center" placeholder="Add lng" ng-model="lng.text">
+					</div>
+					<button type="submit" class="btn btn-primary btn-lg" ng-click="createRoute()">Add</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Google Maps API -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3Z67oPSD-5ADWVTXRe8afEMih3rsBu_8&language=es&region=CO&sensor=true"></script>
+	<!-- Angular -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+	<!-- Main -->
+	<script src="main.js"></script>	
+</div>
+</div>
+</body>
+</html>
